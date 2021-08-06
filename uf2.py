@@ -101,8 +101,9 @@ class FlatFile(object):
 		self.data[address:address+len(bs)] = bs
 
 def accept_file(f, n):
-	if n != 0:
-		return 0
+	if idaapi.IDA_SDK_VERSION < 700:
+		if n != 0:
+			return 0
 	
 	try:
 		header = UF2Header(f)
@@ -140,22 +141,11 @@ def load_file(f, neflags, format):
 	
 	idaapi.add_segm(0, 0, len(ff.data), "FIRMWARE", "CODE")
 	
-	idaapi.add_segm(0x20000000, 0x20000000, 0x20000000 + 0x1000 * 8, "SRAM", "DATA")
-	
-	# Ideally this should be pulled from the SVD
+	# Additional memory layout should be populated using the processor's SVD file:
 	# https://github.com/posborne/cmsis-svd/blob/master/data/Atmel/ATSAMD21G16B.svd
-	idaapi.add_segm(0x41000000, 0x41000000, 0x41002000, "PAC1", "BSS")
-	idaapi.add_segm(0x41000000, 0x41002000, 0x41004000, "DSU", "BSS")
-	idaapi.add_segm(0x41000000, 0x41004000, 0x41004400, "NVMCTRL", "BSS")
-	idaapi.add_segm(0x41000000, 0x41004400, 0x41004800, "PORT", "BSS")
-	idaapi.add_segm(0x41000000, 0x41004800, 0x41005000, "DMAC", "BSS")
-	idaapi.add_segm(0x41000000, 0x41005000, 0x41006000, "USB", "BSS")
-	idaapi.add_segm(0x41000000, 0x41006000, 0x41007000, "MTB", "BSS")
 	
-	idaapi.add_segm(0xe0000000, 0xe0000000, 0xe0000000 + 0x00100000, "SYSTEM", "BSS")
-	
-	idc.MakeDword(0xE000ED08)
-	idc.MakeName(0xE000ED08, "ARM_VectorTableOffsetRegister")
+	# IDA >= 7.5 has a plugin for loading processor info (constants, registers, memory maps)
+	# from an SVD file.
 	
 	return 1
 

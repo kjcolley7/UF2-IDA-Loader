@@ -8,9 +8,9 @@ A detailed spec of the UF2 file format can be found [here](https://github.com/mi
 
 To install, simply copy the [uf2.py](uf2.py) file into IDA's `loaders` directory. Then, whenever you load a UF2 file, it will be detected and IDA will understand how to load it.
 
-## Limitations
+## SVD Loading
 
-For now, due to laziness, the processor is just assumed to be ARM 32-bit. The DEFCON badge uses the SAMD21G16B processor, and an SVD file describing memory layout and such can be found [here](https://github.com/posborne/cmsis-svd/blob/master/data/Atmel/ATSAMD21G16B.svd).
+IDA >= 7.5 has a new SVD loader plugin where you can provide the SVD file that describes a specific ARM processor and it will fill in names of addresses, registers, etc. The DEFCON badge uses the SAMD21G16B processor, and an SVD file describing memory layout and such can be found [here](https://github.com/posborne/cmsis-svd/blob/master/data/Atmel/ATSAMD21G16B.svd).
 
 ## Standalone usage
 
